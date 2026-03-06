@@ -56,20 +56,23 @@ const HeroSection = () => {
           }
         );
 
-        // Scroll-based fade out (staggered, one after another on scroll down)
+        // Scroll-based fade out/in (staggered, reverses on scroll up)
         metrics.forEach((metric, i) => {
-          gsap.to(metric, {
-            opacity: 0,
-            y: -40,
-            ease: "power2.inOut",
-            scrollTrigger: {
-              trigger: containerRef.current,
-              start: `${5 + i * 8}% top`,
-              end: `${15 + i * 8}% top`,
-              scrub: 1,
-              toggleActions: "play reverse play reverse",
-            },
-          });
+          gsap.fromTo(
+            metric,
+            { opacity: 1, y: 0 },
+            {
+              opacity: 0,
+              y: -40,
+              ease: "power2.inOut",
+              scrollTrigger: {
+                trigger: containerRef.current,
+                start: () => `top+=${100 + i * 120}px top`,
+                end: () => `top+=${250 + i * 120}px top`,
+                scrub: true,
+              },
+            }
+          );
         });
       }
 
