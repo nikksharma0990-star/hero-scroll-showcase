@@ -38,9 +38,11 @@ const HeroSection = () => {
         );
       }
 
-      // Metrics stagger animation
+      // Metrics scroll-based fade in/out with stagger
       const metrics = metricsRef.current?.querySelectorAll(".metric-card");
       if (metrics) {
+        // Initial entrance animation
+        const introDelay = 0.3 + (letters?.length || 0) * 0.04 + 0.3;
         gsap.fromTo(
           metrics,
           { opacity: 0, y: 30 },
@@ -50,9 +52,25 @@ const HeroSection = () => {
             duration: 0.8,
             stagger: 0.15,
             ease: "power3.out",
-            delay: 0.3 + (letters?.length || 0) * 0.04 + 0.3,
+            delay: introDelay,
           }
         );
+
+        // Scroll-based fade out (staggered, one after another on scroll down)
+        metrics.forEach((metric, i) => {
+          gsap.to(metric, {
+            opacity: 0,
+            y: -40,
+            ease: "power2.inOut",
+            scrollTrigger: {
+              trigger: containerRef.current,
+              start: `${5 + i * 8}% top`,
+              end: `${15 + i * 8}% top`,
+              scrub: 1,
+              toggleActions: "play reverse play reverse",
+            },
+          });
+        });
       }
 
       // Car scroll animation
